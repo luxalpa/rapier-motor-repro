@@ -132,6 +132,7 @@ fn main() {
             &mut impulse_joint_set,
             &mut multibody_joint_set,
             &mut ccd_solver,
+            None,
             &(),
             &(),
         );
