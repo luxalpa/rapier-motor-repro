@@ -45,14 +45,14 @@ fn main() {
         w_axis: vec4(-12.766783, 81.18979, 17.686138, 1.0),
     };
 
-    let thigh_iso: Isometry<Real> = joint_xform.try_into().unwrap();
+    // let thigh_iso: Isometry<Real> = joint_xform.try_into().unwrap();
 
-    // let thigh_iso = Isometry3::from_parts(
-    //     Vector3::new(-12.766783, 81.18979, 17.686138).into(),
-    //     UnitQuaternion::new_unchecked(
-    //         Vector4::new(-0.03126145, 0.21020934, 0.9771503, 0.0034515674).into(),
-    //     ),
-    // );
+    let thigh_iso = Isometry3::from_parts(
+        Vector3::new(-12.766783, 81.18979, 17.686138).into(),
+        UnitQuaternion::new_unchecked(
+            Vector4::new(-0.03126145, 0.21020934, 0.9771503, 0.0034515674).into(),
+        ),
+    );
 
     let thigh_rb = rigid_body_set.insert(
         RigidBodyBuilder::dynamic()
@@ -118,7 +118,7 @@ fn main() {
 
     const MAX_ITERATIONS: i64 = 1000000;
 
-    for _ in 0..MAX_ITERATIONS {
+    for i in 0..MAX_ITERATIONS {
         let prev_pos = *rigid_body_set.get(thigh_rb).unwrap().position();
 
         physics_pipeline.step(
@@ -132,22 +132,20 @@ fn main() {
             &mut impulse_joint_set,
             &mut multibody_joint_set,
             &mut ccd_solver,
-            None,
             &(),
             &(),
         );
 
         let pos = *rigid_body_set.get(thigh_rb).unwrap().position();
 
-        let change = (prev_pos.translation.vector - pos.translation.vector).magnitude();
+        let change_rot = (prev_pos.rotation * pos.rotation.inverse())
+            .angle()
+            .to_degrees();
 
-        // println!(
-        //     "pos: {:?}",
-        //     change
-        // );
+        println!("[{}] pos: {:?}", i, change_rot);
 
-        if change < 0.01 {
-            println!("Converged!");
+        if change_rot < 0.1 {
+            println!("Converged at {}!", i);
             break;
         }
     }

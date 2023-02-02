@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rapier3d = { version = "0.17.1" }
+#rapier3d = { git = "https://github.com/pellico/rapier.git", branch = "Fix_Revolute-joint-motor-target-position-is-broken-at-and-beyond-90-degree-angles" }
+rapier3d = { version = "0.16.1" }
 glam = { version = "0.21.3" }
-nalgebra = { version = "0.32.1", features = ["convert-glam021"] }
+nalgebra = { version = "0.31.4", features = ["convert-glam021"] }
